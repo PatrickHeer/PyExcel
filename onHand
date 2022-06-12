@@ -1,0 +1,67 @@
+#package EqOrder
+
+from  openpyxl import load_workbook
+import openpyxl
+
+def runOnHandReport():
+    
+    #path = r'C:\Users\patrickh\Usage321521.xlsx'
+    path = r'C:\Users\Patrick\OneDrive\Desktop\Python\EqOrder\onHand.xlsx'
+    wb = load_workbook(path)
+
+    ws = wb['onHand']
+    all_rows = list(ws.rows)
+    all_columns = list(ws.columns)
+
+    d = {}
+
+
+    for row in all_rows[0:762]:
+        model = row[0].value
+        issued = row[6].value
+        description = row[1].value
+        prodLine = row[4].value
+
+
+        for cell in row:
+            try:
+                if "Daikin" in cell.value or "DAIKIN" in cell.value or "daikin" in cell.value:
+                    
+                    #if "CONDENSER" in ws['D'] or "COIL" in ws['D'] or "FURNACE" in ws['D']:
+                    print(f"{model}")
+                    print(f"{issued}")
+                    d[f"{model}"] = f"{issued}"
+            except (AttributeError, TypeError):
+                continue
+
+    ###################################################
+    #path2 = r'C:\Users\patrickh\DaikinOrderTemplate.xlsx'
+    path2 = r'C:\Users\Patrick\OneDrive\Desktop\Python\EqOrder\DaikinOrderTemplate.xlsx'
+    wb2 = load_workbook(path2)
+
+    ws2 = wb2['DaikinOrderTemplate']
+
+    mr = ws.max_row
+    mc = ws.max_column
+
+
+
+
+    for i in range(7,mr +1):
+        for j in range(1,mc +1):
+
+            try: 
+                c = ws.cell(row = i, column = 1)
+                f = ws.cell(row = i, column = 9)
+                c2 = ws2.cell(row = i, column = 1)
+               
+                               
+                if c2.value in d:
+                    for row in all_rows[7:204]:    
+                        ws2.cell(row = i, column = 3).value = d.get(c2.value)
+            except (AttributeError, TypeError):
+                continue
+
+
+    wb2.save(str('DaikinOrderTemplate'))  
+
