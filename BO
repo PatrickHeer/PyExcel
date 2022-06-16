@@ -1,0 +1,64 @@
+from openpyxl import load_workbook
+import openpyxl
+#from pyExcelModifying import issuedReport
+
+
+class onHandReport:
+    path = r'C:\Users\patrickh\BO.xlsx'
+
+    wb = load_workbook(path)
+
+    ws = wb['BO']
+    all_rows = list(ws.rows)
+    all_columns = list(ws.columns)
+
+    d = {}
+
+    mc = ws.max_column
+
+    for row in all_rows[0:204]:
+        
+        model = row[4].value
+        ordered = row[7].value
+        received = row[10].value
+
+        for cell in all_rows[0:204]:
+            for j in range(1, mc +1):
+                try:
+                    if "Daikin" in j.value or "DAIKIN" in j.value or "daikin" in j.value:                  
+                        print(f"{model}")
+                        print(f"{onHand}")
+                        d[f"{model}"] = f"{onHand}"
+                except (AttributeError, TypeError):
+                    continue
+
+    ###################################################
+    path2 = r'C:\Users\patrickh\DaikinOrderTemplate.xlsx'
+
+    wb2 = load_workbook(path2)
+
+    ws2 = wb2['DaikinOrderTemplate']
+
+    mr = ws.max_row
+    mc = ws.max_column
+
+
+
+
+    for i in range(7,mr +1):
+        for j in range(1,mc +1):
+
+            try: 
+                c = ws.cell(row = i, column = 1)
+                c2 = ws2.cell(row = i, column = 1)
+               
+                    
+                if c2.value in d:
+                    for row in all_rows[7:204]:    
+                        ws2.cell(row = i, column = 3).value = d.get(c2.value)
+            except (AttributeError, TypeError):
+                continue
+
+
+    wb2.save(str('DaikinOrderTemplate'))        
+
