@@ -1,0 +1,142 @@
+#package EqOrder
+## !!!!!! THIS WORKS IN ITS CURRENT STATE, NO LONGER WIPES OUT EXTRA COLUMNS
+# DELETED EXTRA LOADS AND SAVES OF THE SAME WORKBOOK
+from  openpyxl import load_workbook
+import openpyxl
+
+
+path = r'\\fm2019\fdr\patrickh\Desktop\py\OrderingApp\Reports\3_20_22_On_Hand.xlsx'
+
+wb = load_workbook(path)
+
+ws = wb['3_20_22_On_Hand']
+all_rows = list(ws.rows)
+all_columns = list(ws.columns)
+
+d = {}
+
+
+for row in all_rows[0:ws.max_row +1]:
+    model = row[0].value
+    #6 is correct, 7 grabs date
+    onHand = row[6].value
+    description = row[2].value
+
+    for cell in row:
+        try:
+            if "Lennox" in cell.value or "LENNOX" in cell.value or "lennox" in cell.value:                  
+                if "cx35" in model or "CX35" in model or "CR33" in model or "cr33" in model:
+                    model = model[0:4] + "-" + model[4::]
+                    
+                print(f"{model}")
+                print(f"{onHand}")
+                
+                d[f"{model}"] = f"{onHand}"
+        except (AttributeError, TypeError):
+            continue
+
+###################################################
+#path2 = r'C:\Users\patrickh\patrickh\Desktop\py\OrderingApp\Daikin\Template.xlsx'
+path2 = r'\\fm2019\fdr\patrickh\Desktop\py\OrderingApp\Lennox\Template.xlsx'
+wb2 = load_workbook(path2)
+
+ws2 = wb2['LennoxOrderTemplate']
+
+mr = ws.max_row
+mc = ws.max_column
+
+
+
+#Changed row length from 73 to 79 to try to include accessories, have not tested yet - 8/27
+for i in range(1,79):
+    for j in range(3,4):
+
+        try: 
+            #c = ws.cell(row = i, column = 1)
+            f = ws.cell(row = i, column = 9)
+            c2 = ws2.cell(row = i, column = 1)
+           
+                
+            if c2.value in d:
+                for row in all_rows[7:204]:    
+
+        
+                    ws2.cell(row = i, column = j).value = d.get(c2.value)
+            #else:
+               # ws2.cell.value = ws2.cell.value    
+        except (AttributeError, TypeError):
+            continue
+
+
+#wb2.save(str('Template2.xlsx'))      
+##############################################################################
+#package EqOrder
+
+#ADD CORRECT REPORT PATH
+# SET WORKSHEET/WORKBOOK NAME
+
+from  openpyxl import load_workbook
+import openpyxl
+path3 = r'\\fm2019\fdr\patrickh\Desktop\py\OrderingApp\Reports\2021SummerUsage.xlsx'
+
+
+wb = load_workbook(path3)
+
+ws = wb['2021SummerUsage']
+all_rows = list(ws.rows)
+all_columns = list(ws.columns)
+
+d2 = {}
+
+
+for row in all_rows[0:ws.max_row +1]:
+    model = row[0].value
+    issued = row[7].value
+    description = row[3].value
+
+    for cell in row:
+        try:
+            if "Lennox" in cell.value or "LENNOX" in cell.value or "lennox" in cell.value:                  
+                if "cx35" in model or "CX35" in model or "CR33" in model or "cr33" in model:
+                    model = model[0:4] + "-" + model[4::]
+                print(f"{model}")
+                print(f"{issued}")
+                d2[f"{model}"] = f"{issued}"
+        except (AttributeError, TypeError):
+            continue
+
+###################################################
+
+#path4 = r'\\fm2019\fdr\patrickh\Desktop\py\OrderingApp\Template.xlsx'
+#wb2 = load_workbook(path2)
+
+#ws2 = wb2['LennoxOrderTemplate']
+
+mr = ws.max_row
+mc = ws.max_column
+
+
+
+#Changed Row Length from 73 to 79  to include accessories, have not tested yet 8/27
+for i in range(2,79):
+    for j in range(10,14):
+
+        try: 
+            #c = ws.cell(row = i, column = 1)
+            f = ws.cell(row = i, column = 9)
+            c2 = ws2.cell(row = i, column = 1)
+           
+                
+            if c2.value in d2:
+                for row in all_rows[7:204]:    
+
+                    ws2.cell(row = i, column = 3).value = ws2.cell(row = i, column = 3).value
+                    ws2.cell(row = i, column = 11).value = d2.get(c2.value)
+            else:
+                continue       
+        except (AttributeError, TypeError):
+            continue
+
+
+wb2.save(str('Template.xlsx'))        
+
